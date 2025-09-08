@@ -25,15 +25,17 @@ jobs:
 
       - name: Set up Git
         run: |
-          git config user.name "ir-paras-oli"
-          git config user.email "paras.oli@invisirisk.com"
+          git config user.name "ir-pranesh-shrestha"
+          git config user.email "pranesh.shrestha@invisirisk.com"
       - name: Add upstream and sync fork
         run: |
           git remote add upstream https://github.com/fastapi/sqlmodel.git
           git fetch upstream
           git checkout main
           git merge upstream/main --no-edit
-          git push https://x-access-token:${{ secrets.MY_PAT }}@github.com/ir-paras-oli/sqlmodel main
+          git push https://x-access-token:${{ secrets.MY_PAT }}@github.com/ir-pranesh-shrestha/sqlmodel main
+
+          
       - name: Setup PSE
         uses: invisirisk/pse-action@latest
         with:
@@ -53,3 +55,19 @@ jobs:
         uses: invisirisk/pse-action@latest
         with:
           cleanup: "true"
+
+
+  gather_analytics:
+    runs-on: ubuntu-latest
+    name: Gather Analytics
+    needs: sync-and-build
+    if: always()
+    steps:
+      - name: Gather Status
+        uses: invisirisk/pse-action@latest
+        with:
+          api_url: "https://app.invisirisk.com"
+          app_token: ${{ secrets.IR_API_KEY }}
+          send_job_status: "true"
+          debug: "true"
+
